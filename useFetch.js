@@ -35,3 +35,5 @@ function useFetch(endpoint){
   
   return {response, error, loading, get, post, put};
 }
+
+export default useFetch;
