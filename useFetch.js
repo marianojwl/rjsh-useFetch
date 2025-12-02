@@ -6,7 +6,7 @@ function Loading({legend=""}) {
   )
 }
 
-function useFetch(endpoint, callback=null, spinnerLegend="Loading..."){
+function useFetch(endpoint, callback=null, spinnerLegend="Cargando...", credentials=null){
   const [response, setResponse] = React.useState(null);
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
@@ -14,7 +14,8 @@ function useFetch(endpoint, callback=null, spinnerLegend="Loading..."){
   const request = async (method="GET", query="", payload=null) => {
     setLoading(true);
     try {
-      const res = await fetch(endpoint+query, method==="GET" ? null : {
+      const res = await fetch(endpoint+query, method==="GET" ? {} : {
+        credentials: credentials,
         method: method,
         headers: {
           'Content-Type': 'application/json',
@@ -29,8 +30,10 @@ function useFetch(endpoint, callback=null, spinnerLegend="Loading..."){
       const responseJson = await res.json();
       setResponse(responseJson);
       if(callback) callback(responseJson);
+      return responseJson;
     } catch (error) {
       setError(`Error: ${error.message}`);
+      return null;
     } finally {
       setLoading(false);
     }
