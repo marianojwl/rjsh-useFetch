@@ -6,7 +6,7 @@ function Loading({legend=""}) {
   )
 }
 
-function useFetch(endpoint, callback=null, spinnerLegend="Cargando...", credentials=null){
+function useFetch(endpoint, callback=null, spinnerLegend="Cargando...", credentials="omit"){
   const [response, setResponse] = React.useState(null);
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
