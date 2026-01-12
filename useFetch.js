@@ -6,6 +6,17 @@ function Loading({legend=""}) {
   )
 }
 
+function MappedRecords({records=[], element}){
+  const Element = element;
+  return (
+    <>
+      {
+        records?.map((record, i)=><Element key={i} record={record} />)
+      }
+    </>
+  );
+}
+
 function useFetch(endpoint, callback=null, spinnerLegend="Cargando...", credentials="omit"){
   const [response, setResponse] = React.useState(null);
   const [error, setError] = React.useState(null);
@@ -44,8 +55,10 @@ function useFetch(endpoint, callback=null, spinnerLegend="Cargando...", credenti
   const put = async payload => request("PUT", "", payload);
 
   const spinner = <Loading legend={spinnerLegend} />;
+
+  const mapRecords = element => <MappedRecords records={response?.data?.records??[]} element={element} />
   
-  return {response, error, loading, get, post, put, spinner};
+  return {response, error, loading, get, post, put, spinner, mapRecords};
 }
 
 export default useFetch;
