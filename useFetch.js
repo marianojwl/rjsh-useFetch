@@ -6,6 +6,7 @@ function Loading({legend=""}) {
   )
 }
 
+
 function MappedRecords({records=[], element}){
   const Element = element;
   return (
@@ -21,9 +22,11 @@ function useFetch(endpoint, callback=null, spinnerLegend="Cargando...", credenti
   const [response, setResponse] = React.useState(null);
   const [error, setError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
+  const [lastQuery, setLastQuery] = React.useState("");
 
   const request = async (method="GET", query="", payload=null) => {
     setLoading(true);
+    setLastQuery(query);
     try {
       const res = await fetch(endpoint+query, method==="GET" ? {} : {
         credentials: credentials,
@@ -39,8 +42,17 @@ function useFetch(endpoint, callback=null, spinnerLegend="Cargando...", credenti
       }
 
       const responseJson = await res.json();
+
+      // 2026-03-04: Probando feature.
+      if(responseJson?.message && responseJson?.message !== "")
+        alert(responseJson?.message);
+      // hasta acá.
+
       setResponse(responseJson);
-      if(callback) callback(responseJson);
+
+      if(callback) 
+        callback(responseJson);
+
       return responseJson;
     } catch (error) {
       setError(`Error: ${error.message}`);
@@ -56,9 +68,22 @@ function useFetch(endpoint, callback=null, spinnerLegend="Cargando...", credenti
 
   const spinner = <Loading legend={spinnerLegend} />;
 
+  
+const ReloadButton = ({onClick}) => {
+  return (
+    loading
+      ? <Loading />
+      : <button className='btn btn-sm' onClick={onClick}>
+          <span className='material-symbols-outlined'>refresh</span>
+        </button>
+  );
+}
+
+  const reloadButton = <ReloadButton onClick={()=>get(lastQuery)} />;
+
   const mapRecords = element => <MappedRecords records={response?.data?.records??[]} element={element} />
   
-  return {response, error, loading, get, post, put, spinner, mapRecords};
+  return {response, error, loading, get, post, put, spinner, reloadButton, mapRecords};
 }
 
 export default useFetch;
