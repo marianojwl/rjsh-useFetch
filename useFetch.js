@@ -44,8 +44,8 @@ function useFetch(endpoint, callback=null, spinnerLegend="Cargando...", credenti
       const responseJson = await res.json();
 
       // 2026-03-04: Probando feature.
-      if(responseJson?.message && responseJson?.message !== "")
-        alert(responseJson?.message);
+      if(responseJson?.alert && responseJson?.alert !== "")
+        alert(responseJson?.alert);
       // hasta acá.
 
       setResponse(responseJson);
